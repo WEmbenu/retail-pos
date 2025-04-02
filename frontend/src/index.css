@@ -96,3 +96,38 @@ body {
   border-width: 6px 6px 0 6px;
   border-color: #333 transparent transparent transparent;
 }
+
+
+
+
+/* -----------Table styling Start------------ */
+
+.table-body tr:nth-child(even) {
+  background-color: rgba(51, 51, 53, 0.08);
+}
+
+.table-container {
+  overflow-y: auto;
+}
+
+.table-header th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #ddf2fd !important;
+  font-weight: bold;
+}
+
+.table-default tbody tr {
+  transition: 300ms;
+}
+
+.table-default tbody tr:hover,
+.table-default tbody tr:focus-within,
+.table-hover:hover {
+  background-color: rgba(22, 72, 99, 0.2) !important;
+}
+
+.table-body .td {
+  padding: 0.2rem;
+}

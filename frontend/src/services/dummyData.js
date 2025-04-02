@@ -156,142 +156,587 @@ export const products = [
 ];
 
 // Customers
+
+// Customer data
 export const customers = [
   {
-    id: 1,
-    name: "John Smith",
-    email: "john.smith@example.com",
-    phone: "+1-555-123-4567",
-    address: "123 Main St, Anytown, CA 94567",
-    joinDate: "2023-01-15T10:00:00Z",
-    totalSpent: 1245.67,
-    lastPurchase: "2023-04-10T14:30:00Z",
+    id: "cust-001",
+    fullName: "John Doe",
+    email: "john.doe@example.com",
+    phone: "+1 (555) 123-4567",
+    address: "123 Main St, New York, NY 10001",
+    notes: "Regular customer, prefers notifications by text",
+    createdAt: "2023-01-15T09:30:00.000Z",
+    totalSpent: 1245.75,
+    lastPurchase: "2023-05-22T14:20:00.000Z",
+    purchaseCount: 8,
+    status: "active",
   },
   {
-    id: 2,
-    name: "Emma Johnson",
-    email: "emma.johnson@example.com",
-    phone: "+1-555-234-5678",
-    address: "456 Oak Ave, Somewhere, NY 10001",
-    joinDate: "2023-01-20T11:15:00Z",
-    totalSpent: 890.25,
-    lastPurchase: "2023-04-15T16:45:00Z",
+    id: "cust-002",
+    fullName: "Jane Smith",
+    email: "jane.smith@example.com",
+    phone: "+1 (555) 987-6543",
+    address: "456 Elm St, Boston, MA 02108",
+    notes: "",
+    createdAt: "2023-02-20T11:45:00.000Z",
+    totalSpent: 3567.25,
+    lastPurchase: "2023-06-01T16:10:00.000Z",
+    purchaseCount: 15,
+    status: "vip",
   },
   {
-    id: 3,
-    name: "Michael Williams",
-    email: "michael.williams@example.com",
-    phone: "+1-555-345-6789",
-    address: "789 Pine St, Nowhere, TX 75001",
-    joinDate: "2023-01-25T14:30:00Z",
-    totalSpent: 1678.9,
-    lastPurchase: "2023-04-12T13:15:00Z",
+    id: "cust-003",
+    fullName: "Robert Johnson",
+    email: "robert@example.com",
+    phone: "+1 (555) 456-7890",
+    address: "789 Oak St, Chicago, IL 60007",
+    notes: "Prefers store pickup",
+    createdAt: "2023-03-10T13:15:00.000Z",
+    totalSpent: 678.5,
+    lastPurchase: "2023-04-15T10:30:00.000Z",
+    purchaseCount: 3,
+    status: "inactive",
   },
   {
-    id: 4,
-    name: "Sophia Brown",
-    email: "sophia.brown@example.com",
-    phone: "+1-555-456-7890",
-    address: "101 Maple Dr, Elsewhere, FL 33101",
-    joinDate: "2023-02-01T09:45:00Z",
-    totalSpent: 567.4,
-    lastPurchase: "2023-04-20T11:30:00Z",
+    id: "cust-004",
+    fullName: "Emily Davis",
+    email: "emily@example.com",
+    phone: "+1 (555) 234-5678",
+    address: "321 Pine St, Seattle, WA 98101",
+    notes: "",
+    createdAt: "2023-04-05T16:20:00.000Z",
+    totalSpent: 2145.3,
+    lastPurchase: "2023-06-10T09:45:00.000Z",
+    purchaseCount: 9,
+    status: "active",
   },
   {
-    id: 5,
-    name: "Daniel Jones",
-    email: "daniel.jones@example.com",
-    phone: "+1-555-567-8901",
-    address: "202 Cedar Ln, Someplace, IL 60601",
-    joinDate: "2023-02-05T13:00:00Z",
-    totalSpent: 2145.75,
-    lastPurchase: "2023-04-18T15:00:00Z",
+    id: "cust-005",
+    fullName: "Michael Wilson",
+    email: "michael@example.com",
+    phone: "+1 (555) 876-5432",
+    address: "654 Maple St, Los Angeles, CA 90001",
+    notes: "Business account",
+    createdAt: "2023-05-12T10:10:00.000Z",
+    totalSpent: 5678.9,
+    lastPurchase: "2023-06-15T13:25:00.000Z",
+    purchaseCount: 20,
+    status: "vip",
   },
 ];
 
-// Transactions
-export const transactions = [
+// Get all customers
+export const getCustomers = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([...customers]);
+    }, 500);
+  });
+};
+
+// Add a new customer
+export const addCustomer = (customer) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const newCustomer = {
+        ...customer,
+        id: `cust-${String(customers.length + 1).padStart(3, "0")}`,
+      };
+      customers.push(newCustomer);
+      resolve(newCustomer);
+    }, 500);
+  });
+};
+
+// Update an existing customer
+export const updateCustomer = (id, updatedCustomer) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = customers.findIndex((cust) => cust.id === id);
+      if (index !== -1) {
+        customers[index] = { ...customers[index], ...updatedCustomer };
+        resolve(customers[index]);
+      } else {
+        reject(new Error("Customer not found"));
+      }
+    }, 500);
+  });
+};
+
+// Delete a customer
+export const deleteCustomer = (id) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = customers.findIndex((cust) => cust.id === id);
+      if (index !== -1) {
+        customers.splice(index, 1);
+        resolve({ success: true });
+      } else {
+        reject(new Error("Customer not found"));
+      }
+    }, 500);
+  });
+};
+
+const transactionsData = [
   {
     id: 1,
-    customerId: 1,
-    totalAmount: 849.98,
-    tax: 59.5,
+    transactionId: "TRX-20230610-001",
+    date: "2023-06-10T14:23:45.000Z",
+    customer: "John Doe",
+    customerDetails: {
+      id: "cust-001",
+      email: "john.doe@example.com",
+      phone: "+1 (555) 123-4567",
+    },
+    paymentMethod: "Credit Card",
+    paymentDetails: {
+      cardNumber: "************4242",
+      cardType: "Visa",
+    },
+    subtotal: 145.9,
+    tax: 11.67,
     discount: 0,
-    paymentMethod: "credit_card",
+    total: 157.57,
     status: "completed",
-    createdAt: "2023-04-10T14:30:00Z",
     items: [
-      { productId: 1, quantity: 1, price: 799.99, discount: 0 },
-      { productId: 6, quantity: 1, price: 4.99, discount: 0 },
-      { productId: 7, quantity: 1, price: 12.99, discount: 0 },
-      { productId: 10, quantity: 2, price: 14.99, discount: 0 },
+      { name: "T-Shirt", sku: "TSHIRT-L-BLU", quantity: 2, price: 24.95 },
+      { name: "Jeans", sku: "JEANS-32-BLK", quantity: 1, price: 89.95 },
+      { name: "Socks", sku: "SOCK-M-WHT", quantity: 3, price: 2.35 },
     ],
+    notes: "",
   },
   {
     id: 2,
-    customerId: 2,
-    totalAmount: 209.97,
-    tax: 14.7,
-    discount: 0,
-    paymentMethod: "cash",
+    transactionId: "TRX-20230609-002",
+    date: "2023-06-09T11:15:22.000Z",
+    customer: "Jane Smith",
+    customerDetails: {
+      id: "cust-002",
+      email: "jane.smith@example.com",
+      phone: "+1 (555) 987-6543",
+    },
+    paymentMethod: "PayPal",
+    paymentDetails: {
+      email: "jane.smith@example.com",
+    },
+    subtotal: 329.85,
+    tax: 26.39,
+    discount: 32.99,
+    total: 323.25,
     status: "completed",
-    createdAt: "2023-04-15T16:45:00Z",
     items: [
-      { productId: 4, quantity: 2, price: 39.99, discount: 0 },
-      { productId: 5, quantity: 1, price: 59.99, discount: 0 },
-      { productId: 6, quantity: 2, price: 4.99, discount: 0 },
-      { productId: 10, quantity: 4, price: 14.99, discount: 0 },
+      { name: "Laptop Bag", sku: "BAG-LPT-BLK", quantity: 1, price: 129.95 },
+      {
+        name: "Wireless Mouse",
+        sku: "MOUSE-WL-BLK",
+        quantity: 1,
+        price: 49.95,
+      },
+      {
+        name: "Monitor Stand",
+        sku: "STAND-MON-SLV",
+        quantity: 1,
+        price: 149.95,
+      },
     ],
+    notes: "Customer requested gift wrapping",
   },
   {
     id: 3,
-    customerId: 3,
-    totalAmount: 1329.98,
-    tax: 93.1,
-    discount: 50,
-    paymentMethod: "credit_card",
+    transactionId: "TRX-20230609-001",
+    date: "2023-06-09T09:45:10.000Z",
+    customer: "Walk-in Customer",
+    customerDetails: null,
+    paymentMethod: "Cash",
+    paymentDetails: null,
+    subtotal: 35.8,
+    tax: 2.86,
+    discount: 0,
+    total: 38.66,
     status: "completed",
-    createdAt: "2023-04-12T13:15:00Z",
     items: [
-      { productId: 2, quantity: 1, price: 1299.99, discount: 50 },
-      { productId: 7, quantity: 1, price: 12.99, discount: 0 },
-      { productId: 6, quantity: 2, price: 4.99, discount: 0 },
-      { productId: 10, quantity: 2, price: 14.99, discount: 0 },
+      { name: "Coffee Mug", sku: "MUG-CER-WHT", quantity: 2, price: 8.95 },
+      { name: "Notebook", sku: "NOTE-A5-BLU", quantity: 1, price: 4.95 },
+      { name: "Pen Set", sku: "PEN-SET-BLK", quantity: 1, price: 12.95 },
     ],
+    notes: "",
   },
   {
     id: 4,
-    customerId: 4,
-    totalAmount: 249.97,
-    tax: 17.5,
+    transactionId: "TRX-20230608-002",
+    date: "2023-06-08T16:37:05.000Z",
+    customer: "Robert Johnson",
+    customerDetails: {
+      id: "cust-003",
+      email: "robert@example.com",
+      phone: "+1 (555) 456-7890",
+    },
+    paymentMethod: "Credit Card",
+    paymentDetails: {
+      cardNumber: "************1234",
+      cardType: "MasterCard",
+    },
+    subtotal: 199.95,
+    tax: 16.0,
     discount: 0,
-    paymentMethod: "debit_card",
-    status: "completed",
-    createdAt: "2023-04-20T11:30:00Z",
+    total: 215.95,
+    status: "refunded",
     items: [
-      { productId: 3, quantity: 1, price: 149.99, discount: 0 },
-      { productId: 4, quantity: 1, price: 39.99, discount: 0 },
-      { productId: 10, quantity: 4, price: 14.99, discount: 0 },
+      {
+        name: "Bluetooth Speaker",
+        sku: "SPKR-BT-BLK",
+        quantity: 1,
+        price: 199.95,
+      },
     ],
+    notes: "Customer reported defective product, full refund processed",
   },
   {
     id: 5,
-    customerId: 5,
-    totalAmount: 1429.97,
-    tax: 100.1,
-    discount: 0,
-    paymentMethod: "credit_card",
+    transactionId: "TRX-20230608-001",
+    date: "2023-06-08T10:12:33.000Z",
+    customer: "Emily Davis",
+    customerDetails: {
+      id: "cust-004",
+      email: "emily@example.com",
+      phone: "+1 (555) 234-5678",
+    },
+    paymentMethod: "Credit Card",
+    paymentDetails: {
+      cardNumber: "************5678",
+      cardType: "Amex",
+    },
+    subtotal: 415.8,
+    tax: 33.26,
+    discount: 41.58,
+    total: 407.48,
     status: "completed",
-    createdAt: "2023-04-18T15:00:00Z",
     items: [
-      { productId: 2, quantity: 1, price: 1299.99, discount: 0 },
-      { productId: 5, quantity: 1, price: 59.99, discount: 0 },
-      { productId: 7, quantity: 2, price: 12.99, discount: 0 },
-      { productId: 6, quantity: 2, price: 4.99, discount: 0 },
-      { productId: 10, quantity: 3, price: 14.99, discount: 0 },
+      { name: "Smart Watch", sku: "WATCH-SMT-SLV", quantity: 1, price: 249.95 },
+      { name: "Charging Dock", sku: "DOCK-WTC-BLK", quantity: 1, price: 49.95 },
+      {
+        name: "Screen Protector",
+        sku: "PROT-WTC-CLR",
+        quantity: 2,
+        price: 14.95,
+      },
+      { name: "Watch Band", sku: "BAND-WTC-BLK", quantity: 1, price: 29.95 },
+      { name: "Extended Warranty", sku: "WARR-1YR", quantity: 1, price: 59.95 },
     ],
+    notes: "10% discount applied for loyalty program",
+  },
+  {
+    id: 6,
+    transactionId: "TRX-20230607-001",
+    date: "2023-06-07T13:45:18.000Z",
+    customer: "Michael Wilson",
+    customerDetails: {
+      id: "cust-005",
+      email: "michael@example.com",
+      phone: "+1 (555) 876-5432",
+    },
+    paymentMethod: "Bank Transfer",
+    paymentDetails: {
+      accountName: "Wilson Enterprises",
+    },
+    subtotal: 1299.95,
+    tax: 104.0,
+    discount: 0,
+    total: 1403.95,
+    status: "pending",
+    items: [
+      { name: "Office Desk", sku: "DESK-OAK-LRG", quantity: 1, price: 599.95 },
+      {
+        name: "Office Chair",
+        sku: "CHAIR-ERG-BLK",
+        quantity: 1,
+        price: 399.95,
+      },
+      { name: "Desk Lamp", sku: "LAMP-DSK-SLV", quantity: 1, price: 89.95 },
+      {
+        name: "Filing Cabinet",
+        sku: "CAB-FILE-GRY",
+        quantity: 1,
+        price: 210.1,
+      },
+    ],
+    notes: "Business purchase - awaiting bank clearance",
   },
 ];
+
+// Get all transactions
+export const getTransactions = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([...transactionsData]);
+    }, 500);
+  });
+};
+
+// Get sales report data
+export const getSalesReport = ({ startDate, endDate, period }) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // This is mock data - in a real application, this would be filtered based on date parameters
+      resolve({
+        totalRevenue: 24563.75,
+        previousRevenue: 21897.45,
+        totalOrders: 367,
+        previousOrders: 342,
+        avgOrderValue: 66.93,
+        previousAvgOrderValue: 64.03,
+        newCustomers: 128,
+        previousNewCustomers: 115,
+        salesByCategory: [
+          { name: "Electronics", amount: 8754.32, percentage: 35.6 },
+          { name: "Clothing", amount: 6241.87, percentage: 25.4 },
+          { name: "Home & Kitchen", amount: 4521.65, percentage: 18.4 },
+          { name: "Books & Media", amount: 2845.3, percentage: 11.6 },
+          { name: "Other", amount: 2200.61, percentage: 9.0 },
+        ],
+        topProducts: [
+          {
+            name: "Wireless Headphones",
+            sku: "ELEC-HDPH-001",
+            unitsSold: 87,
+            revenue: 3045.15,
+          },
+          {
+            name: "Men's T-Shirt",
+            sku: "CLTH-MTEE-L",
+            unitsSold: 132,
+            revenue: 2640.0,
+          },
+          {
+            name: "Coffee Maker",
+            sku: "HOME-COFF-001",
+            unitsSold: 42,
+            revenue: 2394.9,
+          },
+          {
+            name: "Smart Watch",
+            sku: "ELEC-WTCH-001",
+            unitsSold: 28,
+            revenue: 1982.6,
+          },
+          {
+            name: "Desk Lamp",
+            sku: "HOME-LAMP-001",
+            unitsSold: 53,
+            revenue: 1537.0,
+          },
+        ],
+        paymentMethods: [
+          {
+            name: "Credit Card",
+            count: 242,
+            amount: 16874.32,
+            percentage: 68.7,
+          },
+          { name: "Cash", count: 84, amount: 4235.67, percentage: 17.2 },
+          {
+            name: "Mobile Payment",
+            count: 32,
+            amount: 2354.89,
+            percentage: 9.6,
+          },
+          { name: "Other", count: 9, amount: 1098.87, percentage: 4.5 },
+        ],
+        // Time-based data would be generated according to the period
+        timeData:
+          period === "daily"
+            ? generateDailyData()
+            : period === "weekly"
+            ? generateWeeklyData()
+            : generateMonthlyData(),
+      });
+    }, 1000);
+  });
+};
+
+// Helper functions to generate mock time-series data
+function generateDailyData() {
+  const days = 14;
+  return Array.from({ length: days }, (_, i) => ({
+    date: new Date(Date.now() - (days - i - 1) * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0],
+    revenue: 1000 + Math.random() * 2000,
+    orders: 10 + Math.floor(Math.random() * 30),
+  }));
+}
+
+function generateWeeklyData() {
+  const weeks = 8;
+  return Array.from({ length: weeks }, (_, i) => ({
+    week: `Week ${i + 1}`,
+    revenue: 5000 + Math.random() * 10000,
+    orders: 50 + Math.floor(Math.random() * 100),
+  }));
+}
+
+function generateMonthlyData() {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+  return months.map((month) => ({
+    month,
+    revenue: 10000 + Math.random() * 20000,
+    orders: 150 + Math.floor(Math.random() * 200),
+  }));
+}
+
+// Get inventory report data
+export const getInventoryReport = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        products: [
+          {
+            id: 1,
+            name: "Wireless Headphones",
+            sku: "ELEC-HDPH-001",
+            category: "Electronics",
+            stockLevel: 23,
+            reorderPoint: 15,
+            stockStatus: "optimal",
+            costPrice: 25.5,
+            sellingPrice: 39.99,
+            stockValue: 586.5,
+            monthlySales: 42,
+            salesTrend: 12.5,
+          },
+          {
+            id: 2,
+            name: "Smart Watch",
+            sku: "ELEC-WTCH-001",
+            category: "Electronics",
+            stockLevel: 8,
+            reorderPoint: 10,
+            stockStatus: "low",
+            costPrice: 45.75,
+            sellingPrice: 79.99,
+            stockValue: 366.0,
+            monthlySales: 15,
+            salesTrend: 8.2,
+          },
+          {
+            id: 3,
+            name: "Men's T-Shirt (L)",
+            sku: "CLTH-MTEE-L",
+            category: "Clothing",
+            stockLevel: 45,
+            reorderPoint: 20,
+            stockStatus: "overstock",
+            costPrice: 8.25,
+            sellingPrice: 19.99,
+            stockValue: 371.25,
+            monthlySales: 32,
+            salesTrend: -5.3,
+          },
+          {
+            id: 4,
+            name: "Coffee Maker",
+            sku: "HOME-COFF-001",
+            category: "Home & Kitchen",
+            stockLevel: 12,
+            reorderPoint: 10,
+            stockStatus: "optimal",
+            costPrice: 35.5,
+            sellingPrice: 59.99,
+            stockValue: 426.0,
+            monthlySales: 8,
+            salesTrend: 0,
+          },
+          {
+            id: 5,
+            name: "Desk Lamp",
+            sku: "HOME-LAMP-001",
+            category: "Home & Kitchen",
+            stockLevel: 0,
+            reorderPoint: 15,
+            stockStatus: "outOfStock",
+            costPrice: 18.75,
+            sellingPrice: 29.99,
+            stockValue: 0,
+            monthlySales: 22,
+            salesTrend: 15.8,
+          },
+          {
+            id: 6,
+            name: "Wireless Mouse",
+            sku: "ELEC-MOUS-001",
+            category: "Electronics",
+            stockLevel: 32,
+            reorderPoint: 15,
+            stockStatus: "optimal",
+            costPrice: 12.25,
+            sellingPrice: 24.99,
+            stockValue: 392.0,
+            monthlySales: 35,
+            salesTrend: 20.1,
+          },
+          {
+            id: 7,
+            name: "Women's Jeans (M)",
+            sku: "CLTH-WJNS-M",
+            category: "Clothing",
+            stockLevel: 17,
+            reorderPoint: 15,
+            stockStatus: "optimal",
+            costPrice: 22.5,
+            sellingPrice: 49.99,
+            stockValue: 382.5,
+            monthlySales: 18,
+            salesTrend: -2.7,
+          },
+          {
+            id: 8,
+            name: "Toaster",
+            sku: "HOME-TSTR-001",
+            category: "Home & Kitchen",
+            stockLevel: 3,
+            reorderPoint: 8,
+            stockStatus: "low",
+            costPrice: 28.0,
+            sellingPrice: 39.99,
+            stockValue: 84.0,
+            monthlySales: 5,
+            salesTrend: -8.5,
+          },
+          {
+            id: 9,
+            name: "Bluetooth Speaker",
+            sku: "ELEC-SPKR-001",
+            category: "Electronics",
+            stockLevel: 0,
+            reorderPoint: 12,
+            stockStatus: "outOfStock",
+            costPrice: 35.0,
+            sellingPrice: 69.99,
+            stockValue: 0,
+            monthlySales: 28,
+            salesTrend: 32.4,
+          },
+          {
+            id: 10,
+            name: "Water Bottle",
+            sku: "HOME-WBOT-001",
+            category: "Home & Kitchen",
+            stockLevel: 68,
+            reorderPoint: 25,
+            stockStatus: "overstock",
+            costPrice: 6.5,
+            sellingPrice: 14.99,
+            stockValue: 442.0,
+            monthlySales: 20,
+            salesTrend: 5.8,
+          },
+        ],
+      });
+    }, 800);
+  });
+};
 
 // Dashboard data
 export const dashboardSummary = {

@@ -473,9 +473,11 @@ const JTable = ({
           </thead>
           <tbody className="bg-white table-body">
             {loading ? (
-              <td colSpan={visibleFields.length + 1}>
-                <LoadingState columnsCount={visibleFields.length + 1} />
-              </td>
+              <tr>
+                <td colSpan={visibleFields.length + 1}>
+                  <LoadingState columnsCount={visibleFields.length + 1} />
+                </td>
+              </tr>
             ) : paginatedData.length > 0 ? (
               paginatedData.map((row, index) => (
                 <React.Fragment key={row.id || index}>
@@ -542,12 +544,14 @@ const JTable = ({
                 </React.Fragment>
               ))
             ) : (
-              <td colSpan={visibleFields.length + 1}>
-                <EmptyState
-                  searchTerm={searchTerm}
-                  message={emptyStateMessage}
-                />
-              </td>
+              <tr>
+                <td colSpan={visibleFields.length + 1}>
+                  <EmptyState
+                    searchTerm={searchTerm}
+                    message={emptyStateMessage}
+                  />
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
