@@ -1,4 +1,3 @@
-// src/pages/admin/Admin.jsx
 import React, { useState, useEffect } from "react";
 import {
   ShieldCheck,
@@ -22,13 +21,13 @@ import ModalReusable from "../../components/modals/ModalReusable";
 import DeleteConfirmationModal from "../../components/modals/DeleteConfirmationModal";
 import { useSnackbar } from "notistack";
 
-// Dummy data service
+// Import from new data service
 import {
   getUsers,
   addUser,
   updateUser,
   deleteUser,
-} from "../../services/dummyData";
+} from "../../services/dataService";
 
 const Admin = () => {
   const [users, setUsers] = useState([]);

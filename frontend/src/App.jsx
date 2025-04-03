@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -9,7 +9,7 @@ import { SnackbarProvider } from "notistack";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 
-// Layout
+// Layout Components
 import MainLayout from "./components/layout/MainLayout";
 
 // Auth Pages
@@ -19,33 +19,42 @@ import Login from "./pages/auth/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
 import PointOfSale from "./pages/pos/PointOfSale";
 import Products from "./pages/products/Products";
+import ProductCategories from "./pages/products/Categories";
 import Customers from "./pages/customers/Customers";
+import ClientDebts from "./pages/customers/ClientDebts";
 import Transactions from "./pages/transactions/Transactions";
-import Settings from "./pages/settings/Settings";
 
-import Profile from "./pages/profile/Profile";
-import Notifications from "./pages/notifications/Notifications";
+// Inventory Pages
+import Suppliers from "./pages/suppliers/Suppliers";
+import Purchases from "./pages/purchases/Purchases";
+
+// Finance Pages
+import Expenses from "./pages/expenses/Expenses";
+import ExpenseCategories from "./pages/expenses/ExpenseCategories";
 
 // Report Pages
 import SalesReport from "./pages/reports/SalesReport";
 import InventoryReport from "./pages/reports/InventoryReport";
 
-// Import the Admin component
+// Admin Pages
 import Admin from "./pages/admin/Admin";
+import RoleManagement from "./pages/admin/RoleManagement";
+import Settings from "./pages/settings/Settings";
+import Profile from "./pages/profile/Profile";
+import Notifications from "./pages/notifications/Notifications";
 
-// Protected Route Component
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+const PrivateRoute = ({ children, requiredRoles = [] }) => {
+  const { isAuthenticated, hasRole } = useAuth();
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
-      </div>
-    );
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
   }
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  if (requiredRoles.length > 0 && !hasRole(requiredRoles)) {
+    return <Navigate to="/dashboard" />;
+  }
+
+  return children;
 };
 
 function App() {
@@ -54,43 +63,90 @@ function App() {
       <AuthProvider>
         <SnackbarProvider
           maxSnack={3}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
           autoHideDuration={3000}
         >
           <Router>
             <Routes>
-              {/* Auth Routes */}
+              {/* Public Routes */}
               <Route path="/login" element={<Login />} />
 
               {/* Protected Routes */}
               <Route
                 path="/"
                 element={
-                  <ProtectedRoute>
+                  <PrivateRoute>
                     <MainLayout />
-                  </ProtectedRoute>
+                  </PrivateRoute>
                 }
               >
-                <Route index element={<Navigate to="/dashboard" replace />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="pos" element={<PointOfSale />} />
-                <Route path="products" element={<Products />} />
-                <Route path="customers" element={<Customers />} />
-                <Route path="transactions" element={<Transactions />} />
-                <Route path="admin" element={<Admin />} />
-                <Route path="settings" element={<Settings />} />
+                {/* Main Pages */}
+                <Route path="/" element={<Navigate to="/dashboard" />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/pos" element={<PointOfSale />} />
+                <Route path="/products" element={<Products />} />
+                <Route
+                  path="/products/categories"
+                  element={<ProductCategories />}
+                />
+                <Route path="/customers" element={<Customers />} />
+                <Route path="/customers/debts" element={<ClientDebts />} />
+                <Route path="/transactions" element={<Transactions />} />
 
-                {/* New Routes */}
-                <Route path="profile" element={<Profile />} />
-                <Route path="notifications" element={<Notifications />} />
+                {/* Inventory Pages */}
+                <Route path="/suppliers" element={<Suppliers />} />
+                <Route path="/purchases" element={<Purchases />} />
 
-                {/* Report Routes */}
-                <Route path="reports/sales" element={<SalesReport />} />
-                <Route path="reports/inventory" element={<InventoryReport />} />
+                {/* Finance Pages */}
+                <Route path="/expenses" element={<Expenses />} />
+                <Route
+                  path="/expenses/categories"
+                  element={<ExpenseCategories />}
+                />
+
+                {/* Report Pages */}
+                <Route path="/reports/sales" element={<SalesReport />} />
+                <Route
+                  path="/reports/inventory"
+                  element={<InventoryReport />}
+                />
+
+                {/* Admin Pages - Only accessible to admin and manager roles */}
+                <Route
+                  path="/admin"
+                  element={
+                    <PrivateRoute requiredRoles={["admin", "manager"]}>
+                      <Admin />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/admin/roles"
+                  element={
+                    <PrivateRoute requiredRoles={["admin"]}>
+                      <RoleManagement />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <PrivateRoute requiredRoles={["admin", "manager"]}>
+                      <Settings />
+                    </PrivateRoute>
+                  }
+                />
+
+                {/* User Profile - Accessible to all authenticated users */}
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/notifications" element={<Notifications />} />
               </Route>
 
-              {/* Catch All Route */}
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              {/* 404 Fallback */}
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </Router>
         </SnackbarProvider>

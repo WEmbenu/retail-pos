@@ -1,159 +1,1204 @@
-// Product Categories
-export const categories = [
+// This file simulates API responses for development purposes
+// It will be replaced with real API calls in production
+
+// Helper function to simulate async behavior
+const asyncResponse = (data, delay = 500) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(data);
+    }, delay);
+  });
+};
+
+// Generate a random ID
+const generateId = () => {
+  return Math.floor(Math.random() * 10000);
+};
+
+// ==============================================
+// USERS & AUTHENTICATION
+// ==============================================
+
+// User data store
+let users = [
+  {
+    id: 1,
+    fullName: "Admin User",
+    email: "admin@example.com",
+    role: "admin",
+    lastLogin: new Date().toISOString(),
+    createdAt: "2023-01-01T00:00:00.000Z",
+    isActive: true,
+  },
+  {
+    id: 2,
+    fullName: "Manager User",
+    email: "manager@example.com",
+    role: "manager",
+    lastLogin: new Date().toISOString(),
+    createdAt: "2023-01-02T00:00:00.000Z",
+    isActive: true,
+  },
+  {
+    id: 3,
+    fullName: "Cashier User",
+    email: "cashier@example.com",
+    role: "cashier",
+    lastLogin: new Date().toISOString(),
+    createdAt: "2023-01-03T00:00:00.000Z",
+    isActive: true,
+  },
+];
+
+// Mock login function
+export const login = async (email, password) => {
+  // Simulated authentication
+  const user = users.find((u) => u.email === email);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // In a real app, you would check password hash here
+  if (password !== "password") {
+    throw new Error("Invalid password");
+  }
+
+  // Update last login
+  user.lastLogin = new Date().toISOString();
+
+  return asyncResponse({
+    id: user.id,
+    fullName: user.fullName,
+    email: user.email,
+    role: user.role,
+    token: "mock-jwt-token",
+  });
+};
+
+// Get users
+export const getUsers = async () => {
+  return asyncResponse([...users]);
+};
+
+// Add user
+export const addUser = async (userData) => {
+  const newUser = {
+    id: generateId(),
+    ...userData,
+  };
+  users.push(newUser);
+  return asyncResponse(newUser);
+};
+
+// Update user
+export const updateUser = async (id, userData) => {
+  const index = users.findIndex((u) => u.id === id);
+  if (index === -1) {
+    throw new Error("User not found");
+  }
+
+  users[index] = { ...users[index], ...userData };
+  return asyncResponse(users[index]);
+};
+
+// Delete user
+export const deleteUser = async (id) => {
+  const index = users.findIndex((u) => u.id === id);
+  if (index === -1) {
+    throw new Error("User not found");
+  }
+
+  users.splice(index, 1);
+  return asyncResponse({ success: true });
+};
+
+// ==============================================
+// ROLES & PERMISSIONS
+// ==============================================
+
+// Roles data store
+let roles = [
+  {
+    id: 1,
+    name: "admin",
+    description: "Full administrative access",
+    permissions: [
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+    ],
+    userCount: 1,
+    createdAt: "2023-01-01T00:00:00.000Z",
+  },
+  {
+    id: 2,
+    name: "manager",
+    description: "Store management access",
+    permissions: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 16],
+    userCount: 1,
+    createdAt: "2023-01-01T00:00:00.000Z",
+  },
+  {
+    id: 3,
+    name: "cashier",
+    description: "Point of sale access",
+    permissions: [1, 2, 4, 7],
+    userCount: 1,
+    createdAt: "2023-01-01T00:00:00.000Z",
+  },
+];
+
+// Permission categories data
+const permissionCategories = [
+  {
+    id: 1,
+    name: "Sales & POS",
+    permissions: [
+      {
+        id: 1,
+        name: "View POS",
+        description: "Access the point of sale screen",
+      },
+      {
+        id: 2,
+        name: "Process Sales",
+        description: "Create and complete transactions",
+      },
+      {
+        id: 3,
+        name: "Apply Discounts",
+        description: "Apply discounts to sales",
+      },
+      {
+        id: 4,
+        name: "View Transactions",
+        description: "View transaction history",
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Products & Inventory",
+    permissions: [
+      { id: 5, name: "View Products", description: "View product catalog" },
+      {
+        id: 6,
+        name: "Manage Products",
+        description: "Add, edit, and delete products",
+      },
+      { id: 7, name: "View Inventory", description: "Check inventory levels" },
+      {
+        id: 8,
+        name: "Manage Inventory",
+        description: "Adjust inventory quantities",
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: "Customers",
+    permissions: [
+      { id: 9, name: "View Customers", description: "View customer list" },
+      {
+        id: 10,
+        name: "Manage Customers",
+        description: "Add, edit, and delete customers",
+      },
+      {
+        id: 11,
+        name: "Manage Debts",
+        description: "Manage customer credit and payment",
+      },
+    ],
+  },
+  {
+    id: 4,
+    name: "Reports & Analytics",
+    permissions: [
+      {
+        id: 12,
+        name: "View Reports",
+        description: "Access reporting features",
+      },
+      { id: 13, name: "Export Data", description: "Export system data" },
+    ],
+  },
+  {
+    id: 5,
+    name: "Admin & Settings",
+    permissions: [
+      {
+        id: 14,
+        name: "Manage Users",
+        description: "Add, edit, and remove users",
+      },
+      {
+        id: 15,
+        name: "Manage Roles",
+        description: "Configure user roles and permissions",
+      },
+      {
+        id: 16,
+        name: "System Settings",
+        description: "Configure system settings",
+      },
+    ],
+  },
+  {
+    id: 6,
+    name: "Suppliers & Purchases",
+    permissions: [
+      { id: 17, name: "View Suppliers", description: "View supplier list" },
+      {
+        id: 18,
+        name: "Manage Suppliers",
+        description: "Add, edit, and delete suppliers",
+      },
+      { id: 19, name: "View Purchases", description: "View purchase orders" },
+      {
+        id: 20,
+        name: "Manage Purchases",
+        description: "Create and edit purchase orders",
+      },
+    ],
+  },
+];
+
+// Get roles
+export const getRoles = async () => {
+  return asyncResponse([...roles]);
+};
+
+// Get permissions
+export const getPermissions = async () => {
+  return asyncResponse([...permissionCategories]);
+};
+
+// Add role
+export const addRole = async (roleData) => {
+  const newRole = {
+    id: generateId(),
+    ...roleData,
+  };
+  roles.push(newRole);
+  return asyncResponse(newRole);
+};
+
+// Update role
+export const updateRole = async (id, roleData) => {
+  const index = roles.findIndex((r) => r.id === id);
+  if (index === -1) {
+    throw new Error("Role not found");
+  }
+
+  roles[index] = { ...roles[index], ...roleData };
+  return asyncResponse(roles[index]);
+};
+
+// Delete role
+export const deleteRole = async (id) => {
+  const index = roles.findIndex((r) => r.id === id);
+  if (index === -1) {
+    throw new Error("Role not found");
+  }
+
+  roles.splice(index, 1);
+  return asyncResponse({ success: true });
+};
+
+// ==============================================
+// PRODUCTS
+// ==============================================
+
+// Product data store
+export let products = [
+  {
+    id: 1,
+    name: "Laptop",
+    description: "High-performance laptop for professionals",
+    sku: "TECH-001",
+    price: 1299.99,
+    cost: 950.0,
+    categoryId: 1,
+    stockQuantity: 25,
+    isActive: true,
+    image: "https://via.placeholder.com/100",
+  },
+  {
+    id: 2,
+    name: "Smartphone",
+    description: "Latest model smartphone with advanced features",
+    sku: "TECH-002",
+    price: 799.99,
+    cost: 600.0,
+    categoryId: 1,
+    stockQuantity: 40,
+    isActive: true,
+    image: "https://via.placeholder.com/100",
+  },
+  {
+    id: 3,
+    name: "Coffee Maker",
+    description: "Automatic drip coffee maker with timer",
+    sku: "HOME-001",
+    price: 89.99,
+    cost: 45.0,
+    categoryId: 2,
+    stockQuantity: 15,
+    isActive: true,
+    image: "https://via.placeholder.com/100",
+  },
+  {
+    id: 4,
+    name: "Desk Chair",
+    description: "Ergonomic office chair with lumbar support",
+    sku: "FURN-001",
+    price: 199.99,
+    cost: 120.0,
+    categoryId: 3,
+    stockQuantity: 8,
+    isActive: true,
+    image: "https://via.placeholder.com/100",
+  },
+  {
+    id: 5,
+    name: "Wireless Headphones",
+    description: "Noise-cancelling Bluetooth headphones",
+    sku: "TECH-003",
+    price: 149.99,
+    cost: 85.0,
+    categoryId: 1,
+    stockQuantity: 30,
+    isActive: true,
+    image: "https://via.placeholder.com/100",
+  },
+];
+
+// Product categories data
+export let categories = [
   {
     id: 1,
     name: "Electronics",
     description: "Electronic devices and accessories",
-  },
-  { id: 2, name: "Clothing", description: "Apparel and fashion items" },
-  { id: 3, name: "Groceries", description: "Food and household essentials" },
-  { id: 4, name: "Furniture", description: "Home and office furniture" },
-  { id: 5, name: "Beauty", description: "Cosmetics and personal care" },
-];
-
-// Products
-export const products = [
-  {
-    id: 1,
-    name: "Smartphone XS",
-    description: "Latest model with advanced features",
-    price: 799.99,
-    cost: 550.0,
-    sku: "ELEC-SP-001",
-    barcode: "8901234567890",
-    categoryId: 1,
-    stockQuantity: 25,
-    image: "https://via.placeholder.com/150",
-    isActive: true,
-    createdAt: "2023-01-15T08:30:00Z",
+    color: "#3B82F6",
+    productsCount: 3,
   },
   {
     id: 2,
-    name: "Laptop Pro",
-    description: "High-performance laptop for professionals",
-    price: 1299.99,
-    cost: 950.0,
-    sku: "ELEC-LP-002",
-    barcode: "8901234567891",
-    categoryId: 1,
-    stockQuantity: 15,
-    image: "https://via.placeholder.com/150",
-    isActive: true,
-    createdAt: "2023-01-20T10:15:00Z",
+    name: "Home Appliances",
+    description: "Household appliances and tools",
+    color: "#EF4444",
+    productsCount: 1,
   },
   {
     id: 3,
-    name: "Wireless Headphones",
-    description: "Noise-cancelling bluetooth headphones",
-    price: 149.99,
-    cost: 85.0,
-    sku: "ELEC-WH-003",
-    barcode: "8901234567892",
-    categoryId: 1,
-    stockQuantity: 40,
-    image: "https://via.placeholder.com/150",
-    isActive: true,
-    createdAt: "2023-02-05T14:20:00Z",
+    name: "Furniture",
+    description: "Office and home furniture",
+    color: "#10B981",
+    productsCount: 1,
   },
   {
     id: 4,
-    name: "Men's Casual Shirt",
-    description: "Cotton casual shirt for men",
-    price: 39.99,
-    cost: 18.5,
-    sku: "CLTH-MS-001",
-    barcode: "8901234567893",
-    categoryId: 2,
-    stockQuantity: 50,
-    image: "https://via.placeholder.com/150",
+    name: "Clothing",
+    description: "Apparel and fashion items",
+    color: "#F59E0B",
+    productsCount: 0,
+  },
+];
+
+// Get product categories
+export const getCategories = async () => {
+  return asyncResponse([...categories]);
+};
+
+// Add category
+export const addCategory = async (categoryData) => {
+  const newCategory = {
+    id: generateId(),
+    ...categoryData,
+    productsCount: 0,
+  };
+  categories.push(newCategory);
+  return asyncResponse(newCategory);
+};
+
+// Update category
+export const updateCategory = async (id, categoryData) => {
+  const index = categories.findIndex((c) => c.id === id);
+  if (index === -1) {
+    throw new Error("Category not found");
+  }
+
+  categories[index] = { ...categories[index], ...categoryData };
+  return asyncResponse(categories[index]);
+};
+
+// Delete category
+export const deleteCategory = async (id) => {
+  const index = categories.findIndex((c) => c.id === id);
+  if (index === -1) {
+    throw new Error("Category not found");
+  }
+
+  categories.splice(index, 1);
+  return asyncResponse({ success: true });
+};
+
+// Add product
+export const addProduct = async (productData) => {
+  const newProduct = {
+    id: generateId(),
+    ...productData,
+  };
+  products.push(newProduct);
+
+  // Update category product count
+  const categoryIndex = categories.findIndex(
+    (c) => c.id === productData.categoryId
+  );
+  if (categoryIndex !== -1) {
+    categories[categoryIndex].productsCount += 1;
+  }
+
+  return asyncResponse(newProduct);
+};
+
+// Update product
+export const updateProduct = async (id, productData) => {
+  const index = products.findIndex((p) => p.id === id);
+  if (index === -1) {
+    throw new Error("Product not found");
+  }
+
+  // Check if category changed
+  if (productData.categoryId !== products[index].categoryId) {
+    // Decrement old category count
+    const oldCategoryIndex = categories.findIndex(
+      (c) => c.id === products[index].categoryId
+    );
+    if (oldCategoryIndex !== -1) {
+      categories[oldCategoryIndex].productsCount -= 1;
+    }
+
+    // Increment new category count
+    const newCategoryIndex = categories.findIndex(
+      (c) => c.id === productData.categoryId
+    );
+    if (newCategoryIndex !== -1) {
+      categories[newCategoryIndex].productsCount += 1;
+    }
+  }
+
+  products[index] = { ...products[index], ...productData };
+  return asyncResponse(products[index]);
+};
+
+// Delete product
+export const deleteProduct = async (id) => {
+  const index = products.findIndex((p) => p.id === id);
+  if (index === -1) {
+    throw new Error("Product not found");
+  }
+
+  // Decrement category count
+  const categoryIndex = categories.findIndex(
+    (c) => c.id === products[index].categoryId
+  );
+  if (categoryIndex !== -1) {
+    categories[categoryIndex].productsCount -= 1;
+  }
+
+  products.splice(index, 1);
+  return asyncResponse({ success: true });
+};
+
+// ==============================================
+// SUPPLIERS
+// ==============================================
+
+// Suppliers data store
+let suppliers = [
+  {
+    id: 1,
+    name: "Tech Distributors Inc.",
+    contactPerson: "John Smith",
+    email: "john@techdist.com",
+    phone: "555-123-4567",
+    address: "123 Tech Drive, San Jose, CA 95123",
+    category: "electronics",
+    website: "www.techdistributors.com",
+    taxId: "123456789",
+    qualityRating: 4,
+    lastOrderDate: "2023-05-15T00:00:00.000Z",
+    productsCount: 10,
+    status: "active",
+    createdAt: "2023-01-10T00:00:00.000Z",
+    notes: "Reliable supplier for electronic components and devices.",
+  },
+  {
+    id: 2,
+    name: "Office Supply Co.",
+    contactPerson: "Sarah Johnson",
+    email: "sarah@officesupply.com",
+    phone: "555-987-6543",
+    address: "456 Office Park, Chicago, IL 60601",
+    category: "general",
+    website: "www.officesupplyco.com",
+    taxId: "987654321",
+    qualityRating: 5,
+    lastOrderDate: "2023-06-22T00:00:00.000Z",
+    productsCount: 25,
+    status: "active",
+    createdAt: "2023-02-15T00:00:00.000Z",
+    notes: "Premium office supplies and furniture.",
+  },
+  {
+    id: 3,
+    name: "Global Imports Ltd.",
+    contactPerson: "David Lee",
+    email: "david@globalimports.com",
+    phone: "555-456-7890",
+    address: "789 Harbor Blvd, Seattle, WA 98101",
+    category: "general",
+    website: "www.globalimports.com",
+    taxId: "456789123",
+    qualityRating: 3,
+    lastOrderDate: "2023-04-10T00:00:00.000Z",
+    productsCount: 15,
+    status: "inactive",
+    createdAt: "2023-03-20T00:00:00.000Z",
+    notes: "International supplier with wide product range.",
+  },
+];
+
+// Get suppliers
+export const getSuppliers = async () => {
+  return asyncResponse([...suppliers]);
+};
+
+// Add supplier
+export const addSupplier = async (supplierData) => {
+  const newSupplier = {
+    id: generateId(),
+    ...supplierData,
+  };
+  suppliers.push(newSupplier);
+  return asyncResponse(newSupplier);
+};
+
+// Update supplier
+export const updateSupplier = async (id, supplierData) => {
+  const index = suppliers.findIndex((s) => s.id === id);
+  if (index === -1) {
+    throw new Error("Supplier not found");
+  }
+
+  suppliers[index] = { ...suppliers[index], ...supplierData };
+  return asyncResponse(suppliers[index]);
+};
+
+// Delete supplier
+export const deleteSupplier = async (id) => {
+  const index = suppliers.findIndex((s) => s.id === id);
+  if (index === -1) {
+    throw new Error("Supplier not found");
+  }
+
+  suppliers.splice(index, 1);
+  return asyncResponse({ success: true });
+};
+
+// ==============================================
+// PURCHASES
+// ==============================================
+
+// Purchases data store
+let purchases = [
+  {
+    id: 1,
+    invoiceNumber: "PO-001-2023",
+    supplierId: 1,
+    purchaseDate: "2023-05-15T00:00:00.000Z",
+    expectedDeliveryDate: "2023-05-25T00:00:00.000Z",
+    deliveryStatus: "delivered",
+    paymentStatus: "paid",
+    paymentMethod: "bank_transfer",
+    totalAmount: 5250.0,
+    notes: "Monthly electronic inventory restock",
+    createdAt: "2023-05-15T00:00:00.000Z",
+    items: [
+      {
+        productId: 1,
+        quantity: 5,
+        unitPrice: 950.0,
+        total: 4750.0,
+      },
+      {
+        productId: 2,
+        quantity: 1,
+        unitPrice: 500.0,
+        total: 500.0,
+      },
+    ],
+  },
+  {
+    id: 2,
+    invoiceNumber: "PO-002-2023",
+    supplierId: 2,
+    purchaseDate: "2023-06-22T00:00:00.000Z",
+    expectedDeliveryDate: "2023-06-30T00:00:00.000Z",
+    deliveryStatus: "partial",
+    paymentStatus: "partial",
+    paymentMethod: "check",
+    totalAmount: 2400.0,
+    notes: "Office furniture quarterly order",
+    createdAt: "2023-06-22T00:00:00.000Z",
+    items: [
+      {
+        productId: 4,
+        quantity: 20,
+        unitPrice: 120.0,
+        total: 2400.0,
+      },
+    ],
+  },
+  {
+    id: 3,
+    invoiceNumber: "PO-003-2023",
+    supplierId: 1,
+    purchaseDate: "2023-07-10T00:00:00.000Z",
+    expectedDeliveryDate: "2023-07-20T00:00:00.000Z",
+    deliveryStatus: "pending",
+    paymentStatus: "pending",
+    paymentMethod: "bank_transfer",
+    totalAmount: 8500.0,
+    notes: "Smartphone inventory restock",
+    createdAt: "2023-07-10T00:00:00.000Z",
+    items: [
+      {
+        productId: 2,
+        quantity: 10,
+        unitPrice: 600.0,
+        total: 6000.0,
+      },
+      {
+        productId: 5,
+        quantity: 25,
+        unitPrice: 85.0,
+        total: 2125.0,
+      },
+    ],
+  },
+];
+
+// Get purchases
+export const getPurchases = async () => {
+  return asyncResponse([...purchases]);
+};
+
+// Add purchase
+export const addPurchase = async (purchaseData) => {
+  const newPurchase = {
+    id: generateId(),
+    ...purchaseData,
+  };
+  purchases.push(newPurchase);
+
+  // Update supplier's last order date
+  const supplierIndex = suppliers.findIndex(
+    (s) => s.id === parseInt(purchaseData.supplierId)
+  );
+  if (supplierIndex !== -1) {
+    suppliers[supplierIndex].lastOrderDate = new Date().toISOString();
+  }
+
+  return asyncResponse(newPurchase);
+};
+
+// Update purchase
+export const updatePurchase = async (id, purchaseData) => {
+  const index = purchases.findIndex((p) => p.id === id);
+  if (index === -1) {
+    throw new Error("Purchase not found");
+  }
+
+  purchases[index] = { ...purchases[index], ...purchaseData };
+  return asyncResponse(purchases[index]);
+};
+
+// Delete purchase
+export const deletePurchase = async (id) => {
+  const index = purchases.findIndex((p) => p.id === id);
+  if (index === -1) {
+    throw new Error("Purchase not found");
+  }
+
+  purchases.splice(index, 1);
+  return asyncResponse({ success: true });
+};
+
+// ==============================================
+// EXPENSES
+// ==============================================
+
+// Expense categories data
+let expenseCategories = [
+  {
+    id: 1,
+    name: "Rent",
+    description: "Office and retail space rent",
+    color: "#3B82F6",
+    budgetLimit: 3000.0,
+    expensesCount: 2,
+    totalSpent: 6000.0,
     isActive: true,
-    createdAt: "2023-02-10T09:45:00Z",
+    createdAt: "2023-01-01T00:00:00.000Z",
+  },
+  {
+    id: 2,
+    name: "Utilities",
+    description: "Electricity, water, internet, etc.",
+    color: "#10B981",
+    budgetLimit: 1000.0,
+    expensesCount: 3,
+    totalSpent: 750.0,
+    isActive: true,
+    createdAt: "2023-01-01T00:00:00.000Z",
+  },
+  {
+    id: 3,
+    name: "Salaries",
+    description: "Employee salaries and wages",
+    color: "#EF4444",
+    budgetLimit: 10000.0,
+    expensesCount: 1,
+    totalSpent: 9500.0,
+    isActive: true,
+    createdAt: "2023-01-01T00:00:00.000Z",
+  },
+  {
+    id: 4,
+    name: "Marketing",
+    description: "Advertising and promotional expenses",
+    color: "#F59E0B",
+    budgetLimit: 2000.0,
+    expensesCount: 1,
+    totalSpent: 1500.0,
+    isActive: true,
+    createdAt: "2023-01-01T00:00:00.000Z",
   },
   {
     id: 5,
-    name: "Women's Summer Dress",
-    description: "Lightweight summer dress",
-    price: 59.99,
-    cost: 28.0,
-    sku: "CLTH-WD-002",
-    barcode: "8901234567894",
-    categoryId: 2,
-    stockQuantity: 30,
-    image: "https://via.placeholder.com/150",
+    name: "Miscellaneous",
+    description: "Other business expenses",
+    color: "#6366F1",
+    budgetLimit: null,
+    expensesCount: 1,
+    totalSpent: 350.0,
     isActive: true,
-    createdAt: "2023-02-15T11:30:00Z",
+    createdAt: "2023-01-01T00:00:00.000Z",
+  },
+];
+
+// Expenses data
+let expenses = [
+  {
+    id: 1,
+    description: "Monthly Office Rent",
+    amount: 3000.0,
+    date: "2023-07-01T00:00:00.000Z",
+    categoryId: 1,
+    paymentMethod: "bank_transfer",
+    reference: "RENT-JUL2023",
+    notes: "Monthly rent payment for main office",
+    createdAt: "2023-07-01T00:00:00.000Z",
+  },
+  {
+    id: 2,
+    description: "Monthly Store Rent",
+    amount: 3000.0,
+    date: "2023-07-01T00:00:00.000Z",
+    categoryId: 1,
+    paymentMethod: "check",
+    reference: "CHECK-1002",
+    notes: "Monthly rent payment for retail store",
+    createdAt: "2023-07-01T00:00:00.000Z",
+  },
+  {
+    id: 3,
+    description: "Electricity Bill",
+    amount: 350.0,
+    date: "2023-07-05T00:00:00.000Z",
+    categoryId: 2,
+    paymentMethod: "card",
+    reference: "ELEC-JUL2023",
+    notes: "Monthly electricity bill",
+    createdAt: "2023-07-05T00:00:00.000Z",
+  },
+  {
+    id: 4,
+    description: "Water Bill",
+    amount: 120.0,
+    date: "2023-07-06T00:00:00.000Z",
+    categoryId: 2,
+    paymentMethod: "card",
+    reference: "WATER-JUL2023",
+    notes: "Monthly water bill",
+    createdAt: "2023-07-06T00:00:00.000Z",
+  },
+  {
+    id: 5,
+    description: "Internet Service",
+    amount: 280.0,
+    date: "2023-07-08T00:00:00.000Z",
+    categoryId: 2,
+    paymentMethod: "card",
+    reference: "NET-JUL2023",
+    notes: "Monthly internet service fee",
+    createdAt: "2023-07-08T00:00:00.000Z",
   },
   {
     id: 6,
-    name: "Organic Bread",
-    description: "Freshly baked organic bread",
-    price: 4.99,
-    cost: 2.25,
-    sku: "GROC-BR-001",
-    barcode: "8901234567895",
+    description: "Staff Payroll",
+    amount: 9500.0,
+    date: "2023-07-15T00:00:00.000Z",
     categoryId: 3,
-    stockQuantity: 20,
-    image: "https://via.placeholder.com/150",
-    isActive: true,
-    createdAt: "2023-03-01T08:00:00Z",
+    paymentMethod: "bank_transfer",
+    reference: "PAYROLL-JUL2023",
+    notes: "Monthly staff salaries",
+    createdAt: "2023-07-15T00:00:00.000Z",
   },
   {
     id: 7,
-    name: "Coffee Beans Premium",
-    description: "Premium arabica coffee beans",
-    price: 12.99,
-    cost: 7.5,
-    sku: "GROC-CB-002",
-    barcode: "8901234567896",
-    categoryId: 3,
-    stockQuantity: 35,
-    image: "https://via.placeholder.com/150",
-    isActive: true,
-    createdAt: "2023-03-05T09:15:00Z",
+    description: "Facebook Ads",
+    amount: 1500.0,
+    date: "2023-07-10T00:00:00.000Z",
+    categoryId: 4,
+    paymentMethod: "card",
+    reference: "FB-JUL2023",
+    notes: "Monthly social media advertising",
+    createdAt: "2023-07-10T00:00:00.000Z",
   },
   {
     id: 8,
-    name: "Office Desk",
-    description: "Modern office desk with drawers",
-    price: 249.99,
-    cost: 180.0,
-    sku: "FURN-OD-001",
-    barcode: "8901234567897",
-    categoryId: 4,
-    stockQuantity: 10,
-    image: "https://via.placeholder.com/150",
-    isActive: true,
-    createdAt: "2023-03-10T13:45:00Z",
-  },
-  {
-    id: 9,
-    name: "Bookshelf",
-    description: "Wooden bookshelf with 5 shelves",
-    price: 179.99,
-    cost: 120.0,
-    sku: "FURN-BS-002",
-    barcode: "8901234567898",
-    categoryId: 4,
-    stockQuantity: 12,
-    image: "https://via.placeholder.com/150",
-    isActive: true,
-    createdAt: "2023-03-15T15:30:00Z",
-  },
-  {
-    id: 10,
-    name: "Facial Cleanser",
-    description: "Gentle facial cleanser for all skin types",
-    price: 14.99,
-    cost: 6.75,
-    sku: "BEAU-FC-001",
-    barcode: "8901234567899",
+    description: "Office Supplies",
+    amount: 350.0,
+    date: "2023-07-12T00:00:00.000Z",
     categoryId: 5,
-    stockQuantity: 45,
-    image: "https://via.placeholder.com/150",
-    isActive: true,
-    createdAt: "2023-04-01T10:00:00Z",
+    paymentMethod: "cash",
+    reference: "PETTY-001",
+    notes: "Paper, pens, and other office supplies",
+    createdAt: "2023-07-12T00:00:00.000Z",
   },
 ];
+
+// Get expense categories
+export const getExpenseCategories = async () => {
+  return asyncResponse([...expenseCategories]);
+};
+
+// Add expense category
+export const addExpenseCategory = async (categoryData) => {
+  const newCategory = {
+    id: generateId(),
+    ...categoryData,
+    expensesCount: 0,
+    totalSpent: 0.0,
+  };
+  expenseCategories.push(newCategory);
+  return asyncResponse(newCategory);
+};
+
+// Update expense category
+export const updateExpenseCategory = async (id, categoryData) => {
+  const index = expenseCategories.findIndex((c) => c.id === id);
+  if (index === -1) {
+    throw new Error("Expense category not found");
+  }
+
+  expenseCategories[index] = { ...expenseCategories[index], ...categoryData };
+  return asyncResponse(expenseCategories[index]);
+};
+
+// Delete expense category
+export const deleteExpenseCategory = async (id) => {
+  const index = expenseCategories.findIndex((c) => c.id === id);
+  if (index === -1) {
+    throw new Error("Expense category not found");
+  }
+
+  expenseCategories.splice(index, 1);
+  return asyncResponse({ success: true });
+};
+
+// Get expenses
+export const getExpenses = async () => {
+  return asyncResponse([...expenses]);
+};
+
+// Add expense
+export const addExpense = async (expenseData) => {
+  const newExpense = {
+    id: generateId(),
+    ...expenseData,
+  };
+  expenses.push(newExpense);
+
+  // Update category stats
+  if (expenseData.categoryId) {
+    const categoryIndex = expenseCategories.findIndex(
+      (c) => c.id === expenseData.categoryId
+    );
+    if (categoryIndex !== -1) {
+      expenseCategories[categoryIndex].expensesCount += 1;
+      expenseCategories[categoryIndex].totalSpent += parseFloat(
+        expenseData.amount
+      );
+    }
+  }
+
+  return asyncResponse(newExpense);
+};
+
+// Update expense
+export const updateExpense = async (id, expenseData) => {
+  const index = expenses.findIndex((e) => e.id === id);
+  if (index === -1) {
+    throw new Error("Expense not found");
+  }
+
+  const oldAmount = expenses[index].amount;
+  const oldCategoryId = expenses[index].categoryId;
+  const newAmount =
+    expenseData.amount !== undefined
+      ? parseFloat(expenseData.amount)
+      : oldAmount;
+  const newCategoryId =
+    expenseData.categoryId !== undefined
+      ? expenseData.categoryId
+      : oldCategoryId;
+
+  // Update category stats if amount or category changed
+  if (oldAmount !== newAmount || oldCategoryId !== newCategoryId) {
+    // Update old category stats
+    if (oldCategoryId) {
+      const oldCategoryIndex = expenseCategories.findIndex(
+        (c) => c.id === oldCategoryId
+      );
+      if (oldCategoryIndex !== -1) {
+        expenseCategories[oldCategoryIndex].totalSpent -= oldAmount;
+        expenseCategories[oldCategoryIndex].expensesCount -= 1;
+      }
+    }
+
+    // Update new category stats
+    if (newCategoryId) {
+      const newCategoryIndex = expenseCategories.findIndex(
+        (c) => c.id === newCategoryId
+      );
+      if (newCategoryIndex !== -1) {
+        expenseCategories[newCategoryIndex].totalSpent += newAmount;
+        expenseCategories[newCategoryIndex].expensesCount += 1;
+      }
+    }
+  }
+
+  expenses[index] = { ...expenses[index], ...expenseData };
+  return asyncResponse(expenses[index]);
+};
+
+// Delete expense
+export const deleteExpense = async (id) => {
+  const index = expenses.findIndex((e) => e.id === id);
+  if (index === -1) {
+    throw new Error("Expense not found");
+  }
+
+  // Update category stats
+  const categoryId = expenses[index].categoryId;
+  if (categoryId) {
+    const categoryIndex = expenseCategories.findIndex(
+      (c) => c.id === categoryId
+    );
+    if (categoryIndex !== -1) {
+      expenseCategories[categoryIndex].expensesCount -= 1;
+      expenseCategories[categoryIndex].totalSpent -= expenses[index].amount;
+    }
+  }
+
+  expenses.splice(index, 1);
+  return asyncResponse({ success: true });
+};
+
+// ==============================================
+// CUSTOMER DEBTS
+// ==============================================
+
+// Customer debts data
+let customerDebts = [
+  {
+    id: 1,
+    customerName: "John Doe",
+    email: "john@example.com",
+    phone: "555-123-4567",
+    originalAmount: 1500.0,
+    paidAmount: 500.0,
+    remainingAmount: 1000.0,
+    description: "Store credit for bulk purchase",
+    dueDate: "2023-08-15T00:00:00.000Z",
+    paymentStatus: "partial",
+    notes: "Customer promised to pay in installments",
+    createdAt: "2023-07-01T00:00:00.000Z",
+    payments: [
+      {
+        amount: 500.0,
+        paymentDate: "2023-07-15T00:00:00.000Z",
+        paymentMethod: "cash",
+        reference: "RCPT-1001",
+        notes: "First installment payment",
+      },
+    ],
+  },
+  {
+    id: 2,
+    customerName: "Jane Smith",
+    email: "jane@example.com",
+    phone: "555-987-6543",
+    originalAmount: 750.0,
+    paidAmount: 750.0,
+    remainingAmount: 0.0,
+    description: "Invoice #INV-2023-0042",
+    dueDate: "2023-07-20T00:00:00.000Z",
+    paymentStatus: "paid",
+    notes: "Payment completed before due date",
+    createdAt: "2023-07-05T00:00:00.000Z",
+    payments: [
+      {
+        amount: 750.0,
+        paymentDate: "2023-07-15T00:00:00.000Z",
+        paymentMethod: "card",
+        reference: "CARD-TRANS-4532",
+        notes: "Full payment via credit card",
+      },
+    ],
+  },
+  {
+    id: 3,
+    customerName: "Robert Johnson",
+    email: "robert@example.com",
+    phone: "555-456-7890",
+    originalAmount: 2500.0,
+    paidAmount: 0.0,
+    remainingAmount: 2500.0,
+    description: "Store credit for equipment purchase",
+    dueDate: "2023-09-01T00:00:00.000Z",
+    paymentStatus: "unpaid",
+    notes: "Customer will pay full amount by due date",
+    createdAt: "2023-07-10T00:00:00.000Z",
+    payments: [],
+  },
+];
+
+// Get customers with debts
+export const getCustomersWithDebts = async () => {
+  return asyncResponse([...customerDebts]);
+};
+
+// Add customer debt
+export const addCustomerDebt = async (debtData) => {
+  const newDebt = {
+    id: generateId(),
+    ...debtData,
+  };
+  customerDebts.push(newDebt);
+  return asyncResponse(newDebt);
+};
+
+// Update customer debt
+export const updateCustomerDebt = async (id, debtData) => {
+  const index = customerDebts.findIndex((d) => d.id === id);
+  if (index === -1) {
+    throw new Error("Customer debt not found");
+  }
+
+  customerDebts[index] = { ...customerDebts[index], ...debtData };
+  return asyncResponse(customerDebts[index]);
+};
+
+// Delete customer debt
+export const deleteCustomerDebt = async (id) => {
+  const index = customerDebts.findIndex((d) => d.id === id);
+  if (index === -1) {
+    throw new Error("Customer debt not found");
+  }
+
+  customerDebts.splice(index, 1);
+  return asyncResponse({ success: true });
+};
+
+// Add payment to customer debt
+export const addDebtPayment = async (id, paymentData) => {
+  const index = customerDebts.findIndex((d) => d.id === id);
+  if (index === -1) {
+    throw new Error("Customer debt not found");
+  }
+
+  // Add the payment to the payments array
+  const payments = [...customerDebts[index].payments, paymentData.payment];
+
+  // Update the debt record
+  customerDebts[index] = {
+    ...customerDebts[index],
+    payments,
+    paidAmount: paymentData.paidAmount,
+    remainingAmount: paymentData.remainingAmount,
+    paymentStatus: paymentData.paymentStatus,
+  };
+
+  return asyncResponse(customerDebts[index]);
+};
+
+// ==============================================
+// DASHBOARD SUMMARY
+// ==============================================
+
+// Dashboard summary data for widgets
+export const dashboardSummary = {
+  todaySales: 4350.75,
+  weekSales: 28500.25,
+  monthSales: 125750.8,
+  todayTransactions: 42,
+  inventoryValue: 89250.5,
+  salesByCategory: [
+    { category: "Electronics", sales: 65000, percentage: 52 },
+    { category: "Home Appliances", sales: 32500, percentage: 26 },
+    { category: "Furniture", sales: 15000, percentage: 12 },
+    { category: "Clothing", sales: 12500, percentage: 10 },
+  ],
+  recentTransactions: [
+    { id: "TR-001", customer: "John Doe", amount: 1299.99, time: "10:25 AM" },
+    { id: "TR-002", customer: "Jane Smith", amount: 89.99, time: "11:42 AM" },
+    {
+      id: "TR-003",
+      customer: "Robert Johnson",
+      amount: 599.99,
+      time: "12:15 PM",
+    },
+    { id: "TR-004", customer: "Emily Davis", amount: 149.99, time: "1:30 PM" },
+    {
+      id: "TR-005",
+      customer: "Michael Brown",
+      amount: 399.99,
+      time: "2:45 PM",
+    },
+  ],
+  popularProducts: [
+    { id: 1, name: "Laptop", sales: 28, revenue: 36399.72 },
+    { id: 2, name: "Smartphone", sales: 42, revenue: 33599.58 },
+    { id: 3, name: "Wireless Headphones", sales: 35, revenue: 5249.65 },
+    { id: 4, name: "Coffee Maker", sales: 20, revenue: 1799.8 },
+    { id: 5, name: "Desk Chair", sales: 15, revenue: 2999.85 },
+  ],
+};
 
 // Customers
 
@@ -473,389 +1518,4 @@ export const getTransactions = () => {
       resolve([...transactionsData]);
     }, 500);
   });
-};
-
-// Get sales report data
-export const getSalesReport = ({ startDate, endDate, period }) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // This is mock data - in a real application, this would be filtered based on date parameters
-      resolve({
-        totalRevenue: 24563.75,
-        previousRevenue: 21897.45,
-        totalOrders: 367,
-        previousOrders: 342,
-        avgOrderValue: 66.93,
-        previousAvgOrderValue: 64.03,
-        newCustomers: 128,
-        previousNewCustomers: 115,
-        salesByCategory: [
-          { name: "Electronics", amount: 8754.32, percentage: 35.6 },
-          { name: "Clothing", amount: 6241.87, percentage: 25.4 },
-          { name: "Home & Kitchen", amount: 4521.65, percentage: 18.4 },
-          { name: "Books & Media", amount: 2845.3, percentage: 11.6 },
-          { name: "Other", amount: 2200.61, percentage: 9.0 },
-        ],
-        topProducts: [
-          {
-            name: "Wireless Headphones",
-            sku: "ELEC-HDPH-001",
-            unitsSold: 87,
-            revenue: 3045.15,
-          },
-          {
-            name: "Men's T-Shirt",
-            sku: "CLTH-MTEE-L",
-            unitsSold: 132,
-            revenue: 2640.0,
-          },
-          {
-            name: "Coffee Maker",
-            sku: "HOME-COFF-001",
-            unitsSold: 42,
-            revenue: 2394.9,
-          },
-          {
-            name: "Smart Watch",
-            sku: "ELEC-WTCH-001",
-            unitsSold: 28,
-            revenue: 1982.6,
-          },
-          {
-            name: "Desk Lamp",
-            sku: "HOME-LAMP-001",
-            unitsSold: 53,
-            revenue: 1537.0,
-          },
-        ],
-        paymentMethods: [
-          {
-            name: "Credit Card",
-            count: 242,
-            amount: 16874.32,
-            percentage: 68.7,
-          },
-          { name: "Cash", count: 84, amount: 4235.67, percentage: 17.2 },
-          {
-            name: "Mobile Payment",
-            count: 32,
-            amount: 2354.89,
-            percentage: 9.6,
-          },
-          { name: "Other", count: 9, amount: 1098.87, percentage: 4.5 },
-        ],
-        // Time-based data would be generated according to the period
-        timeData:
-          period === "daily"
-            ? generateDailyData()
-            : period === "weekly"
-            ? generateWeeklyData()
-            : generateMonthlyData(),
-      });
-    }, 1000);
-  });
-};
-
-// Helper functions to generate mock time-series data
-function generateDailyData() {
-  const days = 14;
-  return Array.from({ length: days }, (_, i) => ({
-    date: new Date(Date.now() - (days - i - 1) * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split("T")[0],
-    revenue: 1000 + Math.random() * 2000,
-    orders: 10 + Math.floor(Math.random() * 30),
-  }));
-}
-
-function generateWeeklyData() {
-  const weeks = 8;
-  return Array.from({ length: weeks }, (_, i) => ({
-    week: `Week ${i + 1}`,
-    revenue: 5000 + Math.random() * 10000,
-    orders: 50 + Math.floor(Math.random() * 100),
-  }));
-}
-
-function generateMonthlyData() {
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-  return months.map((month) => ({
-    month,
-    revenue: 10000 + Math.random() * 20000,
-    orders: 150 + Math.floor(Math.random() * 200),
-  }));
-}
-
-// Get inventory report data
-export const getInventoryReport = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        products: [
-          {
-            id: 1,
-            name: "Wireless Headphones",
-            sku: "ELEC-HDPH-001",
-            category: "Electronics",
-            stockLevel: 23,
-            reorderPoint: 15,
-            stockStatus: "optimal",
-            costPrice: 25.5,
-            sellingPrice: 39.99,
-            stockValue: 586.5,
-            monthlySales: 42,
-            salesTrend: 12.5,
-          },
-          {
-            id: 2,
-            name: "Smart Watch",
-            sku: "ELEC-WTCH-001",
-            category: "Electronics",
-            stockLevel: 8,
-            reorderPoint: 10,
-            stockStatus: "low",
-            costPrice: 45.75,
-            sellingPrice: 79.99,
-            stockValue: 366.0,
-            monthlySales: 15,
-            salesTrend: 8.2,
-          },
-          {
-            id: 3,
-            name: "Men's T-Shirt (L)",
-            sku: "CLTH-MTEE-L",
-            category: "Clothing",
-            stockLevel: 45,
-            reorderPoint: 20,
-            stockStatus: "overstock",
-            costPrice: 8.25,
-            sellingPrice: 19.99,
-            stockValue: 371.25,
-            monthlySales: 32,
-            salesTrend: -5.3,
-          },
-          {
-            id: 4,
-            name: "Coffee Maker",
-            sku: "HOME-COFF-001",
-            category: "Home & Kitchen",
-            stockLevel: 12,
-            reorderPoint: 10,
-            stockStatus: "optimal",
-            costPrice: 35.5,
-            sellingPrice: 59.99,
-            stockValue: 426.0,
-            monthlySales: 8,
-            salesTrend: 0,
-          },
-          {
-            id: 5,
-            name: "Desk Lamp",
-            sku: "HOME-LAMP-001",
-            category: "Home & Kitchen",
-            stockLevel: 0,
-            reorderPoint: 15,
-            stockStatus: "outOfStock",
-            costPrice: 18.75,
-            sellingPrice: 29.99,
-            stockValue: 0,
-            monthlySales: 22,
-            salesTrend: 15.8,
-          },
-          {
-            id: 6,
-            name: "Wireless Mouse",
-            sku: "ELEC-MOUS-001",
-            category: "Electronics",
-            stockLevel: 32,
-            reorderPoint: 15,
-            stockStatus: "optimal",
-            costPrice: 12.25,
-            sellingPrice: 24.99,
-            stockValue: 392.0,
-            monthlySales: 35,
-            salesTrend: 20.1,
-          },
-          {
-            id: 7,
-            name: "Women's Jeans (M)",
-            sku: "CLTH-WJNS-M",
-            category: "Clothing",
-            stockLevel: 17,
-            reorderPoint: 15,
-            stockStatus: "optimal",
-            costPrice: 22.5,
-            sellingPrice: 49.99,
-            stockValue: 382.5,
-            monthlySales: 18,
-            salesTrend: -2.7,
-          },
-          {
-            id: 8,
-            name: "Toaster",
-            sku: "HOME-TSTR-001",
-            category: "Home & Kitchen",
-            stockLevel: 3,
-            reorderPoint: 8,
-            stockStatus: "low",
-            costPrice: 28.0,
-            sellingPrice: 39.99,
-            stockValue: 84.0,
-            monthlySales: 5,
-            salesTrend: -8.5,
-          },
-          {
-            id: 9,
-            name: "Bluetooth Speaker",
-            sku: "ELEC-SPKR-001",
-            category: "Electronics",
-            stockLevel: 0,
-            reorderPoint: 12,
-            stockStatus: "outOfStock",
-            costPrice: 35.0,
-            sellingPrice: 69.99,
-            stockValue: 0,
-            monthlySales: 28,
-            salesTrend: 32.4,
-          },
-          {
-            id: 10,
-            name: "Water Bottle",
-            sku: "HOME-WBOT-001",
-            category: "Home & Kitchen",
-            stockLevel: 68,
-            reorderPoint: 25,
-            stockStatus: "overstock",
-            costPrice: 6.5,
-            sellingPrice: 14.99,
-            stockValue: 442.0,
-            monthlySales: 20,
-            salesTrend: 5.8,
-          },
-        ],
-      });
-    }, 800);
-  });
-};
-
-// User data
-const usersData = [
-  {
-    id: 1,
-    fullName: "Admin User",
-    email: "admin@retailpos.com",
-    role: "admin",
-    isActive: true,
-    lastLogin: "2023-06-15T09:30:00.000Z",
-    createdAt: "2023-01-10T12:00:00.000Z",
-  },
-  {
-    id: 2,
-    fullName: "Store Manager",
-    email: "manager@retailpos.com",
-    role: "manager",
-    isActive: true,
-    lastLogin: "2023-06-14T16:45:00.000Z",
-    createdAt: "2023-01-15T14:30:00.000Z",
-  },
-  {
-    id: 3,
-    fullName: "Sales Cashier",
-    email: "cashier@retailpos.com",
-    role: "cashier",
-    isActive: true,
-    lastLogin: "2023-06-15T12:10:00.000Z",
-    createdAt: "2023-02-01T09:15:00.000Z",
-  },
-  {
-    id: 4,
-    fullName: "Part-time Cashier",
-    email: "parttimer@retailpos.com",
-    role: "cashier",
-    isActive: false,
-    lastLogin: "2023-05-20T15:22:00.000Z",
-    createdAt: "2023-03-10T10:00:00.000Z",
-  },
-];
-
-// Get all users
-export const getUsers = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([...usersData]);
-    }, 500);
-  });
-};
-
-// Add a new user
-export const addUser = (user) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newUser = {
-        ...user,
-        id: usersData.length + 1,
-      };
-      usersData.push(newUser);
-      resolve(newUser);
-    }, 500);
-  });
-};
-
-// Update an existing user
-export const updateUser = (id, updatedUser) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = usersData.findIndex((user) => user.id === id);
-      if (index !== -1) {
-        usersData[index] = { ...usersData[index], ...updatedUser };
-        resolve(usersData[index]);
-      } else {
-        reject(new Error("User not found"));
-      }
-    }, 500);
-  });
-};
-
-// Delete a user
-export const deleteUser = (id) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = usersData.findIndex((user) => user.id === id);
-      if (index !== -1) {
-        usersData.splice(index, 1);
-        resolve({ success: true });
-      } else {
-        reject(new Error("User not found"));
-      }
-    }, 500);
-  });
-};
-
-// Dashboard data
-export const dashboardSummary = {
-  todaySales: 2548.75,
-  todayTransactions: 15,
-  weekSales: 12450.9,
-  monthSales: 45680.25,
-  inventoryValue: 85420.5,
-  lowStockItems: 3,
-  popularProducts: [
-    { id: 1, name: "Smartphone XS", sales: 23, revenue: 18399.77 },
-    { id: 3, name: "Wireless Headphones", sales: 18, revenue: 2699.82 },
-    { id: 6, name: "Organic Bread", sales: 45, revenue: 224.55 },
-  ],
-  salesByCategory: [
-    { category: "Electronics", sales: 25678.9, percentage: 56.2 },
-    { category: "Clothing", sales: 8945.6, percentage: 19.6 },
-    { category: "Groceries", sales: 5432.8, percentage: 11.9 },
-    { category: "Furniture", sales: 3210.4, percentage: 7.0 },
-    { category: "Beauty", sales: 2412.55, percentage: 5.3 },
-  ],
-  recentTransactions: [
-    { id: 15, customer: "Alice Cooper", amount: 349.97, time: "2 hours ago" },
-    { id: 14, customer: "Bob Miller", amount: 129.99, time: "4 hours ago" },
-    { id: 13, customer: "Carol White", amount: 899.95, time: "Yesterday" },
-    { id: 12, customer: "David Clark", amount: 74.85, time: "Yesterday" },
-    { id: 11, customer: "Eva Green", amount: 1249.99, time: "2 days ago" },
-  ],
 };
