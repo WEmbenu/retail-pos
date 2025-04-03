@@ -334,7 +334,9 @@ const PointOfSale = () => {
   // Filter customers based on search term
   const filteredCustomers = customers.filter(
     (customer) =>
-      customer.name.toLowerCase().includes(customerSearchTerm.toLowerCase()) ||
+      customer.fullName
+        .toLowerCase()
+        .includes(customerSearchTerm.toLowerCase()) ||
       customer.email.toLowerCase().includes(customerSearchTerm.toLowerCase()) ||
       customer.phone.includes(customerSearchTerm)
   );
@@ -400,7 +402,7 @@ const PointOfSale = () => {
   const handleSelectCustomer = (customer) => {
     setSelectedCustomer(customer);
     setIsCustomerModalOpen(false);
-    enqueueSnackbar(`Selected customer: ${customer.name}`, {
+    enqueueSnackbar(`Selected customer: ${customer.fullName}`, {
       variant: "success",
     });
   };
@@ -410,6 +412,7 @@ const PointOfSale = () => {
     // In a real app, this would send the transaction to the server
     const transaction = {
       customerId: selectedCustomer?.id || null,
+      customerName: selectedCustomer?.fullName || "Walk-in Customer",
       items: cart.map((item) => ({
         productId: item.id,
         quantity: item.quantity,
@@ -529,7 +532,7 @@ const PointOfSale = () => {
                     Customer
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {selectedCustomer.name}
+                    {selectedCustomer.fullName}
                   </p>
                 </div>
                 <button
@@ -630,7 +633,7 @@ const PointOfSale = () => {
                   >
                     <div className="flex justify-between">
                       <h4 className="font-medium text-gray-900 dark:text-white">
-                        {customer.name}
+                        {customer.fullName}
                       </h4>
                       <span className="text-sm text-gray-500 dark:text-gray-400">
                         ${customer.totalSpent.toFixed(2)}

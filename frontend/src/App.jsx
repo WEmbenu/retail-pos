@@ -23,9 +23,15 @@ import Customers from "./pages/customers/Customers";
 import Transactions from "./pages/transactions/Transactions";
 import Settings from "./pages/settings/Settings";
 
+import Profile from "./pages/profile/Profile";
+import Notifications from "./pages/notifications/Notifications";
+
 // Report Pages
 import SalesReport from "./pages/reports/SalesReport";
 import InventoryReport from "./pages/reports/InventoryReport";
+
+// Import the Admin component
+import Admin from "./pages/admin/Admin";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -71,7 +77,12 @@ function App() {
                 <Route path="products" element={<Products />} />
                 <Route path="customers" element={<Customers />} />
                 <Route path="transactions" element={<Transactions />} />
+                <Route path="admin" element={<Admin />} />
                 <Route path="settings" element={<Settings />} />
+
+                {/* New Routes */}
+                <Route path="profile" element={<Profile />} />
+                <Route path="notifications" element={<Notifications />} />
 
                 {/* Report Routes */}
                 <Route path="reports/sales" element={<SalesReport />} />

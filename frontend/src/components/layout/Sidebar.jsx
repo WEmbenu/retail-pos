@@ -15,6 +15,7 @@ import {
   LogOut,
   Moon,
   Sun,
+  ShieldCheck,
 } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -157,6 +158,14 @@ const Sidebar = ({ isMobile = false, onCloseMobile }) => {
 
         {hasRole([ROLES.ADMIN, ROLES.MANAGER]) && (
           <MenuSection title="Admin" isCollapsed={isCollapsed}>
+            <MenuItem
+              to="/admin"
+              icon={Users}
+              text="Admin Panel"
+              isCollapsed={isCollapsed}
+              isActive={pathname === "/admin"}
+              onClick={handleMenuClick}
+            />
             <MenuItem
               to="/settings"
               icon={Settings}

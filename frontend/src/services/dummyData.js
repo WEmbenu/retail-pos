@@ -738,6 +738,99 @@ export const getInventoryReport = () => {
   });
 };
 
+// User data
+const usersData = [
+  {
+    id: 1,
+    fullName: "Admin User",
+    email: "admin@retailpos.com",
+    role: "admin",
+    isActive: true,
+    lastLogin: "2023-06-15T09:30:00.000Z",
+    createdAt: "2023-01-10T12:00:00.000Z",
+  },
+  {
+    id: 2,
+    fullName: "Store Manager",
+    email: "manager@retailpos.com",
+    role: "manager",
+    isActive: true,
+    lastLogin: "2023-06-14T16:45:00.000Z",
+    createdAt: "2023-01-15T14:30:00.000Z",
+  },
+  {
+    id: 3,
+    fullName: "Sales Cashier",
+    email: "cashier@retailpos.com",
+    role: "cashier",
+    isActive: true,
+    lastLogin: "2023-06-15T12:10:00.000Z",
+    createdAt: "2023-02-01T09:15:00.000Z",
+  },
+  {
+    id: 4,
+    fullName: "Part-time Cashier",
+    email: "parttimer@retailpos.com",
+    role: "cashier",
+    isActive: false,
+    lastLogin: "2023-05-20T15:22:00.000Z",
+    createdAt: "2023-03-10T10:00:00.000Z",
+  },
+];
+
+// Get all users
+export const getUsers = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([...usersData]);
+    }, 500);
+  });
+};
+
+// Add a new user
+export const addUser = (user) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const newUser = {
+        ...user,
+        id: usersData.length + 1,
+      };
+      usersData.push(newUser);
+      resolve(newUser);
+    }, 500);
+  });
+};
+
+// Update an existing user
+export const updateUser = (id, updatedUser) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = usersData.findIndex((user) => user.id === id);
+      if (index !== -1) {
+        usersData[index] = { ...usersData[index], ...updatedUser };
+        resolve(usersData[index]);
+      } else {
+        reject(new Error("User not found"));
+      }
+    }, 500);
+  });
+};
+
+// Delete a user
+export const deleteUser = (id) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = usersData.findIndex((user) => user.id === id);
+      if (index !== -1) {
+        usersData.splice(index, 1);
+        resolve({ success: true });
+      } else {
+        reject(new Error("User not found"));
+      }
+    }, 500);
+  });
+};
+
 // Dashboard data
 export const dashboardSummary = {
   todaySales: 2548.75,
