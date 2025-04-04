@@ -30,7 +30,7 @@ import {
   addCustomer,
   updateCustomer,
   deleteCustomer,
-} from "../../services/dummyData";
+} from "../../services/dataService";
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);

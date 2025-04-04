@@ -22,7 +22,7 @@ import {
   addCategory,
   updateCategory,
   deleteCategory,
-} from "../../services/dummyData";
+} from "../../services/dataService";
 
 const ProductCategories = () => {
   const [categories, setCategories] = useState([]);

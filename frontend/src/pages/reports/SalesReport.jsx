@@ -16,7 +16,7 @@ import { Input } from "../../components/ui/input";
 import { useSnackbar } from "notistack";
 
 // Dummy data service - replace with API calls later
-import { getSalesReport } from "../../services/dummyData";
+import { getSalesReport } from "../../services/dataService";
 
 const SalesReport = () => {
   const [reportData, setReportData] = useState(null);

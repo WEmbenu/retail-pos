@@ -16,6 +16,7 @@ import {
   Clipboard,
   Eye,
   DollarSign,
+  Clock,
 } from "lucide-react";
 import JTable from "../../components/tables/JTable";
 import { Input } from "../../components/ui/input";
@@ -31,7 +32,7 @@ import {
   deletePurchase,
   getSuppliers,
   getProducts,
-} from "../../services/dummyData";
+} from "../../services/dataService";
 
 const Purchases = () => {
   const [purchases, setPurchases] = useState([]);

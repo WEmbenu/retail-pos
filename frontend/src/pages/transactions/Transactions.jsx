@@ -22,7 +22,7 @@ import ModalReusable from "../../components/modals/ModalReusable";
 import { useSnackbar } from "notistack";
 
 // Dummy data service
-import { getTransactions } from "../../services/dummyData";
+import { getTransactions } from "../../services/dataService";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);

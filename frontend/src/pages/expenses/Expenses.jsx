@@ -28,7 +28,7 @@ import {
   updateExpense,
   deleteExpense,
   getExpenseCategories,
-} from "../../services/dummyData";
+} from "../../services/dataService";
 
 const Expenses = () => {
   const [expenses, setExpenses] = useState([]);

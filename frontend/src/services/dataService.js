@@ -82,6 +82,12 @@ import {
   deleteCustomerDebt,
   addDebtPayment,
 
+  // Sales Reports
+  getSalesReport,
+
+  //Inventory Report
+  getInventoryReport,
+
   // Transactions
   getTransactions,
   getTransactionById,
@@ -179,6 +185,12 @@ export {
   updateTransactionStatus,
   getTransactionsByDateRange,
   getTransactionsByCustomer,
+
+  // Sales Reports
+  getSalesReport,
+
+  //Inventory Report
+  getInventoryReport,
 
   // Dashboard and Analytics
   getDashboardSummary,

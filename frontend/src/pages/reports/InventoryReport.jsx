@@ -19,7 +19,7 @@ import { Input } from "../../components/ui/input";
 import { useSnackbar } from "notistack";
 
 // Dummy data service
-import { getInventoryReport } from "../../services/dummyData";
+import { getInventoryReport } from "../../services/dataService";
 
 const InventoryReport = () => {
   const [inventory, setInventory] = useState([]);

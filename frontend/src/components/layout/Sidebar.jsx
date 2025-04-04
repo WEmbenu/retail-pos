@@ -16,6 +16,12 @@ import {
   Moon,
   Sun,
   ShieldCheck,
+  TruckIcon,
+  DollarSign,
+  Tag,
+  ShoppingBag,
+  CreditCard,
+  FolderIcon,
 } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -116,7 +122,18 @@ const Sidebar = ({ isMobile = false, onCloseMobile }) => {
             icon={Package}
             text="Products"
             isCollapsed={isCollapsed}
-            isActive={pathname.startsWith("/products")}
+            isActive={
+              pathname.startsWith("/products") &&
+              !pathname.includes("/categories")
+            }
+            onClick={handleMenuClick}
+          />
+          <MenuItem
+            to="/products/categories"
+            icon={Tag}
+            text="Product Categories"
+            isCollapsed={isCollapsed}
+            isActive={pathname.includes("/products/categories")}
             onClick={handleMenuClick}
           />
           <MenuItem
@@ -124,7 +141,15 @@ const Sidebar = ({ isMobile = false, onCloseMobile }) => {
             icon={Users}
             text="Customers"
             isCollapsed={isCollapsed}
-            isActive={pathname.startsWith("/customers")}
+            isActive={pathname === "/customers"}
+            onClick={handleMenuClick}
+          />
+          <MenuItem
+            to="/customers/debts"
+            icon={CreditCard}
+            text="Customer Debts"
+            isCollapsed={isCollapsed}
+            isActive={pathname === "/customers/debts"}
             onClick={handleMenuClick}
           />
           <MenuItem
@@ -132,7 +157,45 @@ const Sidebar = ({ isMobile = false, onCloseMobile }) => {
             icon={Receipt}
             text="Transactions"
             isCollapsed={isCollapsed}
-            isActive={pathname.startsWith("/transactions")}
+            isActive={pathname === "/transactions"}
+            onClick={handleMenuClick}
+          />
+        </MenuSection>
+
+        <MenuSection title="Inventory" isCollapsed={isCollapsed}>
+          <MenuItem
+            to="/suppliers"
+            icon={TruckIcon}
+            text="Suppliers"
+            isCollapsed={isCollapsed}
+            isActive={pathname === "/suppliers"}
+            onClick={handleMenuClick}
+          />
+          <MenuItem
+            to="/purchases"
+            icon={ShoppingBag}
+            text="Purchase Orders"
+            isCollapsed={isCollapsed}
+            isActive={pathname === "/purchases"}
+            onClick={handleMenuClick}
+          />
+        </MenuSection>
+
+        <MenuSection title="Finance" isCollapsed={isCollapsed}>
+          <MenuItem
+            to="/expenses"
+            icon={DollarSign}
+            text="Expenses"
+            isCollapsed={isCollapsed}
+            isActive={pathname === "/expenses"}
+            onClick={handleMenuClick}
+          />
+          <MenuItem
+            to="/expenses/categories"
+            icon={FolderIcon}
+            text="Expense Categories"
+            isCollapsed={isCollapsed}
+            isActive={pathname === "/expenses/categories"}
             onClick={handleMenuClick}
           />
         </MenuSection>
@@ -154,6 +217,14 @@ const Sidebar = ({ isMobile = false, onCloseMobile }) => {
             isActive={pathname === "/reports/inventory"}
             onClick={handleMenuClick}
           />
+          <MenuItem
+            to="/reports/expenses"
+            icon={FileText}
+            text="Expense Report"
+            isCollapsed={isCollapsed}
+            isActive={pathname === "/reports/expenses"}
+            onClick={handleMenuClick}
+          />
         </MenuSection>
 
         {hasRole([ROLES.ADMIN, ROLES.MANAGER]) && (
@@ -161,9 +232,17 @@ const Sidebar = ({ isMobile = false, onCloseMobile }) => {
             <MenuItem
               to="/admin"
               icon={Users}
-              text="Admin Panel"
+              text="User Management"
               isCollapsed={isCollapsed}
               isActive={pathname === "/admin"}
+              onClick={handleMenuClick}
+            />
+            <MenuItem
+              to="/admin/roles"
+              icon={ShieldCheck}
+              text="Role Management"
+              isCollapsed={isCollapsed}
+              isActive={pathname === "/admin/roles"}
               onClick={handleMenuClick}
             />
             <MenuItem

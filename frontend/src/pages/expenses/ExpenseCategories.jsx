@@ -22,7 +22,7 @@ import {
   addExpenseCategory,
   updateExpenseCategory,
   deleteExpenseCategory,
-} from "../../services/dummyData";
+} from "../../services/dataService";
 
 const ExpenseCategories = () => {
   const [categories, setCategories] = useState([]);

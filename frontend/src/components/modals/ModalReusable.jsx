@@ -17,11 +17,16 @@ const ModalReusable = ({
   bodyClassName = "",
   overlayClassName = "",
   maxHeight,
+  variant = "gradient", // 'gradient', 'solid', or 'minimal'
+  showBackdrop = true,
+  preventScroll = true,
 }) => {
   const modalRef = useRef(null);
   const [viewportHeight, setViewportHeight] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Set initial viewport height
     setViewportHeight(window.innerHeight);
 
@@ -57,7 +62,7 @@ const ModalReusable = ({
     }
 
     // Re-enable scrolling when modal closes
-    if (isOpen) {
+    if (isOpen && preventScroll) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -68,17 +73,20 @@ const ModalReusable = ({
         window.removeEventListener("keydown", handleKeyDown, true);
         window.removeEventListener("resize", handleResize);
       }
-      document.body.style.overflow = "auto";
+      if (preventScroll) {
+        document.body.style.overflow = "auto";
+      }
     };
-  }, [isOpen, onClose, handleEscKey]);
+  }, [isOpen, onClose, handleEscKey, preventScroll]);
 
   // Set modal size - responsively
   const sizeClasses = {
+    xs: "max-w-xs w-full",
     sm: "max-w-md w-full",
     md: "max-w-xl w-full",
     lg: "max-w-3xl w-full",
     xl: "max-w-5xl w-full",
-    full: "max-w-full w-full",
+    full: "max-w-full w-full h-full rounded-none",
   };
 
   // Set modal position with improved mobile handling
@@ -94,9 +102,24 @@ const ModalReusable = ({
 
   // Calculate max height for content area
   const getContentMaxHeight = () => {
+    if (!mounted) return "90vh";
     // Default to 90% of viewport on mobile, with a bit more room on larger screens
     const defaultMaxHeight = `${Math.min(viewportHeight * 0.9, 800)}px`;
     return maxHeight || defaultMaxHeight;
+  };
+
+  // Get header styles based on variant
+  const getHeaderStyles = () => {
+    switch (variant) {
+      case "gradient":
+        return "bg-gradient-to-r from-cyan-700 to-purple-700 text-white";
+      case "solid":
+        return "bg-cyan-700 dark:bg-cyan-800 text-white";
+      case "minimal":
+        return "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700";
+      default:
+        return "bg-gradient-to-r from-cyan-700 to-purple-700 text-white";
+    }
   };
 
   return (
@@ -108,7 +131,11 @@ const ModalReusable = ({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={handleOverlayClick}
-          className={`fixed inset-0 z-40 grid ${positionClasses[position]} overflow-y-auto bg-black/40 backdrop-blur-sm cursor-pointer px-4 sm:px-6 ${overlayClassName}`}
+          className={`fixed inset-0 z-40 grid ${
+            positionClasses[position]
+          } overflow-y-auto ${
+            showBackdrop ? "bg-black/40 dark:bg-black/60 backdrop-blur-sm" : ""
+          } cursor-pointer px-4 sm:px-6 ${overlayClassName}`}
           aria-modal="true"
           role="dialog"
           aria-labelledby="modal-title"
@@ -116,7 +143,7 @@ const ModalReusable = ({
           <motion.div
             ref={modalRef}
             onClick={(e) => e.stopPropagation()}
-            className={`bg-white rounded-lg ${sizeClasses[size]} shadow-2xl cursor-default relative overflow-hidden m-auto`}
+            className={`bg-white dark:bg-gray-900 rounded-lg ${sizeClasses[size]} shadow-2xl dark:shadow-gray-950/20 cursor-default relative overflow-hidden m-auto border border-gray-200 dark:border-gray-800`}
             initial={{ scale: 0.95, y: 20, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.95, y: 20, opacity: 0 }}
@@ -127,44 +154,69 @@ const ModalReusable = ({
             }}
             style={{
               maxHeight:
-                position !== "center"
+                position !== "center" || size === "full"
                   ? "auto"
                   : `min(${getContentMaxHeight()}, 100vh - 2rem)`,
             }}
           >
             {/* Header */}
             <div
-              className={`bg-gradient-to-r from-cyan-700 to-purple-700 p-1 sm:p-2 flex items-center justify-between z-10 sticky top-0 ${headerClassName}`}
+              className={`${getHeaderStyles()} p-1.5 sm:p-3 flex items-center justify-between z-10 sticky top-0 ${headerClassName}`}
             >
               <div className="flex items-center z-10 gap-2 overflow-hidden">
                 {Icon && (
-                  <span className="text-white flex-shrink-0">
-                    <Icon size={12} />
+                  <span
+                    className={
+                      variant === "minimal"
+                        ? "text-cyan-600 dark:text-cyan-400 flex-shrink-0"
+                        : "text-white flex-shrink-0"
+                    }
+                  >
+                    <Icon size={14} />
                   </span>
                 )}
-                <span id="modal-title" className="text-sm  text-white truncate">
+                <span
+                  id="modal-title"
+                  className={`text-sm font-medium ${
+                    variant === "minimal"
+                      ? "text-gray-800 dark:text-gray-200"
+                      : "text-white"
+                  } truncate`}
+                >
                   {title}
                 </span>
               </div>
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="text-white/90 cursor-pointer hover:text-red-200 transition-colors rounded-full p-1 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30 flex-shrink-0 ml-2"
+                  className={`
+                    cursor-pointer rounded-full p-1.5 flex-shrink-0 ml-2 transition-colors
+                    ${
+                      variant === "minimal"
+                        ? "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-gray-400 dark:focus:ring-gray-500"
+                        : "text-white/90 hover:text-white hover:bg-white/10 focus:ring-white/30"
+                    }
+                    focus:outline-none focus:ring-2
+                  `}
                   aria-label="Close modal"
                 >
-                  <X size={12} />
+                  <X size={14} />
                 </button>
               )}
             </div>
 
             {/* Content with scrollable container */}
             <div
-              className={`relative p-3 sm:p-5 bg-white w-full overflow-y-auto ${bodyClassName}`}
+              className={`relative p-3 sm:p-5 bg-white dark:bg-gray-900 w-full overflow-y-auto ${bodyClassName}`}
               style={{
                 maxHeight:
-                  position === "center"
-                    ? `calc(${getContentMaxHeight()} - 3rem)` // Subtract header height
-                    : `calc(90vh - 3rem)`,
+                  position === "center" && size !== "full"
+                    ? `calc(${getContentMaxHeight()} - ${
+                        variant === "minimal" ? "3.5rem" : "3.75rem"
+                      })` // Adjust for header height
+                    : size === "full"
+                    ? "calc(100vh - 3.75rem)"
+                    : `calc(90vh - 3.75rem)`,
               }}
             >
               {children}

@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   AlertTriangle,
   X,
+  Package,
 } from "lucide-react";
 import JTable from "../../components/tables/JTable";
 import { Input } from "../../components/ui/input";
@@ -32,7 +33,7 @@ import {
   addSupplier,
   updateSupplier,
   deleteSupplier,
-} from "../../services/dummyData";
+} from "../../services/dataService";
 
 const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
